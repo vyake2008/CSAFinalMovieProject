@@ -6,9 +6,8 @@ import java.util.*; //imports EVERYTHING.
  */
 public class KeywordAnalyzer extends Movie { //subclass of Movie
     private List<String> keywordList;
-      /**List of unique keywords taken from the description of the movie*/
-      
-      
+    /**List of unique keywords taken from the description of the movie*/
+
     /**
      * Constructs the KeywordAnalyzer object using the movie's title, genre and description
      * 
@@ -20,7 +19,7 @@ public class KeywordAnalyzer extends Movie { //subclass of Movie
         super(title, genre, description);//must be first line in order to implement inheritance correctly
         keywordList = new ArrayList<>();
     }
-    
+
     /**
      * Extracts certain keywords from the movie's description by
      * Converting description to lowercase
@@ -28,14 +27,32 @@ public class KeywordAnalyzer extends Movie { //subclass of Movie
      * Filters out words 3 chars or less
      * Ensuring only non-occuring words are added
      */
-    public void extractKeywords() { //converting the whole description to lowercase and split it into individual words using punctuation and special characters
+    public void extractKeywords() {
         String[] words = description.toLowerCase().split("[ ,.!?;:\\-]+");
-        for (String word : words) { //skipping short words,that are 3 chars or less, and repeated entries
-            if (!keywordList.contains(word) && word.length() > 3) {
-                keywordList.add(word); //add this to keyword list
-            }
-        }
+        keywordList = extractRecursive(words, 0, new ArrayList<>());
     }
+/** 
+ * Recursively makes a list of keywords by taking a look at each and every word
+ * 
+ * @param words    the array of words from description
+ * @param index    the current index being viewed
+ * @param result   the current list of unique keywords
+ * @return         the complete list of valid keywords after the recursive sequence
+ */
+
+    public List<String> extractRecursive(String[] words, int index, List<String> result) {
+        if (index >= words.length) {
+            return result; //default: stop when all the words have been looked at
+        }
+
+        String word = words[index];
+        if (word.length() > 3 && !result.contains(word)) {
+            result.add(word); //adding result to result list
+        }
+
+        return extractRecursive(words, index + 1, result); //move on to next word
+    }
+
     /**
      * Return list of keywords extracted from movie's description
      * 
